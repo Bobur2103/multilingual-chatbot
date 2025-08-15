@@ -101,14 +101,9 @@ export class HuggingFaceClient {
 let huggingFaceClient: HuggingFaceClient | null = null
 
 export function getHuggingFaceClient(): HuggingFaceClient | null {
-  if (typeof window !== "undefined") {
-    // Client-side: API key should be passed from server
-    return null
-  }
-
   const apiKey = process.env.HUGGINGFACE_API_KEY
   if (!apiKey) {
-    console.warn("HUGGINGFACE_API_KEY not found in environment variables")
+    console.error("Hugging Face client not configured. Please set HUGGINGFACE_API_KEY environment variable.")
     return null
   }
 

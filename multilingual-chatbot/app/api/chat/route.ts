@@ -11,9 +11,13 @@ export async function POST(request: NextRequest) {
 
     const client = getHuggingFaceClient()
     if (!client) {
+      console.error("HUGGINGFACE_API_KEY not found in environment variables")
       return NextResponse.json(
-        { error: "Hugging Face client not configured. Please set HUGGINGFACE_API_KEY environment variable." },
-        { status: 500 },
+        {
+          error: "AI service not configured. Please add HUGGINGFACE_API_KEY to environment variables.",
+          details: "Contact administrator to configure the API key.",
+        },
+        { status: 503 },
       )
     }
 
@@ -25,6 +29,12 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error("Chat API Error:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    return NextResponse.json(
+      {
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 },
+    )
   }
 }
